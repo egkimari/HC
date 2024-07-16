@@ -25,31 +25,30 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item {{ Request::is('/') ? 'active' : '' }}">
-                        <!-- Home link -->
                         <a class="nav-link" href="{{ url('/') }}">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item {{ Request::is('hostels') ? 'active' : '' }}">
-                        <!-- Hostels link -->
                         <a class="nav-link" href="{{ url('/hostels') }}">Hostels</a>
                     </li>
                     <li class="nav-item {{ Request::is('about') ? 'active' : '' }}">
-                        <!-- About link -->
                         <a class="nav-link" href="{{ url('/about') }}">About</a>
                     </li>
                     <li class="nav-item {{ Request::is('contact') ? 'active' : '' }}">
-                        <!-- Contact link -->
                         <a class="nav-link" href="{{ url('/contact') }}">Contact</a>
                     </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
                     @guest
                         <li class="nav-item {{ Request::is('login') ? 'active' : '' }}">
-                            <!-- Log in link -->
                             <a class="nav-link" href="{{ route('login') }}">Log in</a>
                         </li>
                         <li class="nav-item {{ Request::is('register') ? 'active' : '' }}">
-                            <!-- Register link -->
                             <a class="nav-link" href="{{ route('register') }}">Register</a>
                         </li>
                     @else
+                        <li class="nav-item">
+                            <a class="nav-link profile-link" href="{{ route('student.profile.show') }}">Profile</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('logout') }}"
                                onclick="event.preventDefault();

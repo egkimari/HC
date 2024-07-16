@@ -17,65 +17,59 @@ use App\Http\Controllers\Student\BookingController as StudentBookingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\HostelController;
 
-// Home routes
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-
-// About page
+// Home and Static Pages
+Route::get('/', [HomeController::class, 'index'])->name('home'); // Home page
 Route::get('/about', function () {
     return view('frontend.about');
 })->name('about');
-
-// Contact page
 Route::get('/contact', [ContactController::class, 'showContactForm'])->name('contact');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
-// Public hostel routes
-Route::resource('/hostels', StudentHostelController::class)->only(['index', 'show']);
-
-// Authentication routes
-Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+// Authentication Routes
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
-// Admin routes
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+// Routes for viewing hostels
+Route::get('/hostels', [HostelController::class, 'index'])->name('hostels.index');
+Route::get('/hostels/{hostel}', [HostelController::class, 'show'])->name('hostels.show');
+
+// Booking Routes
+Route::middleware(['auth'])->group(function () {
+    Route::resource('bookings', BookingController::class)->only(['index', 'create', 'store']);
+});
+
+// Admin Routes
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::resource('hostels', AdminHostelController::class);
     Route::resource('users', AdminUserController::class);
     Route::get('reports', [AdminDashboardController::class, 'showReports'])->name('reports');
 });
 
-// Landlord routes
-Route::prefix('landlord')->name('landlord.')->middleware(['auth', 'landlord'])->group(function () {
-    Route::resource('hostels', LandlordHostelController::class);
-    Route::get('profile', [ProfileController::class, 'index'])->name('landlord.profile');
-    Route::post('profile', [ProfileController::class, 'update'])->name('landlord.profile.update');
-    Route::get('bookings', [LandlordBookingController::class, 'index'])->name('landlord.bookings.index');
-    Route::put('bookings/{booking}', [LandlordBookingController::class, 'update'])->name('landlord.bookings.update');
+// Landlord Routes
+Route::prefix('landlord')->name('landlord.')->middleware(['auth', 'role:landlord'])->group(function () {
+    Route::get('dashboard', [LandlordDashboardController::class, 'index'])->name('dashboard');
+    Route::resource('hostels', LandlordHostelController::class)->except(['show']);
+    Route::resource('bookings', LandlordBookingController::class)->except(['show']);
 });
 
-// Student routes
-Route::prefix('student')->name('student.')->middleware(['auth', 'student'])->group(function () {
+// Student Routes
+Route::prefix('student')->name('student.')->middleware(['auth', 'role:student'])->group(function () {
     Route::get('dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
-    Route::get('profile', [ProfileController::class, 'index'])->name('student.profile');
-    Route::post('profile', [ProfileController::class, 'update'])->name('student.profile.update');
-    Route::resource('hostels', StudentHostelController::class)->only(['index', 'show']);
-    Route::get('bookings', [StudentBookingController::class, 'index'])->name('student.bookings.index');
-});
-
-// Booking routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
-    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
-    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+    Route::resource('hostels', StudentHostelController::class)->only(['index']);
+    Route::resource('bookings', StudentBookingController::class)->only(['index']);
+    Route::get('profile', [ProfileController::class, 'show'])->name('profile.show'); // View profile
+    Route::get('profile/edit', [ProfileController::class, 'edit'])->name('profile.edit'); // Profile edit form
+    Route::put('profile', [ProfileController::class, 'update'])->name('profile.update'); // Update profile
+    Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy'); // Delete profile
 });
 
 // Default Route for other undefined routes
-Route::fallback(function() {
+Route::fallback(function () {
     return redirect()->route('home');
 });

@@ -18,5 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(HostelsTableSeeder::class);
          //Admin
         $this->call(AdminUserSeeder::class);
+        // image
+        $this->call(ImagesTableSeeder::class);
     }
 }

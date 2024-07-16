@@ -1,30 +1,25 @@
+<!-- resources/views/frontend/home.blade.php -->
 @extends('frontend.layout')
 
 @section('title', 'Home - HostelConnect')
 
 @section('styles')
     <style>
-        /* Welcome section styles */
-        .welcome-section {
-            background-image: url('{{ asset("Images/background.jpg") }}');
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            color: #fff;
+        .main-content {
+            text-align: center;
         }
 
-        .welcome-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6); /* Darkened background */
+        .main-content h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .main-content p {
+            font-size: 1.25rem;
+        }
+
+        .card-deck .card {
+            margin-bottom: 30px; /* Add space between cards */
         }
 
         .card-img-top {
@@ -32,24 +27,27 @@
             object-fit: cover;
         }
 
-        .card-deck .card {
-            margin-bottom: 30px; /* Add space between cards */
+        /* Ensure that the text is visible */
+        .main-content a {
+            color: #010913; /* Primary link color */
         }
 
-        .main-content {
-            position: relative;
-            z-index: 1; /* Ensure content is above the background overlay */
+        .main-content a:hover {
+            color: #0044cc; /* Changed hover color for better visibility */
+        }
+
+        /* Ensure container max-width */
+        .container {
+            max-width: 1200px; /* Adjust the maximum width */
         }
     </style>
 @endsection
 
 @section('content')
-    <section id="home" class="welcome-section">
-        <div class="container">
-            <div class="main-content text-center text-white">
-                <h1>Welcome to HostelConnect</h1>
-                <p>The Ultimate Hostel Solution To Your Housing Problem</p>
-            </div>
+    <div class="container mt-5">
+        <div class="main-content">
+            <h1>Welcome to HostelConnect</h1>
+            <p>The Ultimate Hostel Solution To Your Housing Problem</p>
 
             <div class="card-deck mt-4">
                 <div class="card">
@@ -62,7 +60,7 @@
                 </div>
 
                 <div class="card">
-                    <a href="{{ route('bookings.index') }}" class="card-link"> <!-- Added link to booking.index -->
+                    <a href="{{ route('bookings.index') }}" class="card-link">
                         <div class="card-body text-center">
                             <h3 class="card-title">Manage Your Bookings</h3>
                             <p class="card-text">Keep track of your bookings and payments easily through our user-friendly interface.</p>
@@ -96,5 +94,5 @@
                 <p class="text-center">No hostels available at the moment.</p>
             @endif
         </div>
-    </section>
+    </div>
 @endsection

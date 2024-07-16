@@ -3,27 +3,31 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Student;
 use App\Models\Landlord;
+use App\Models\Student;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Auth\Events\Registered;
+use Illuminate\Validation\ValidationException; // Include ValidationException
+use Psr\Log\LoggerInterface;
 
 class RegisterController extends Controller
 {
     protected $redirectTo = '/home';
+    protected $logger;
 
-    public function __construct()
+    public function __construct(LoggerInterface $logger)
     {
         $this->middleware('guest');
+        $this->logger = $logger;
     }
 
     public function showRegistrationForm()
     {
-        return view('auth.register');
+        return view('auth.register'); // Assuming your registration form view is in 'resources/views/auth/register.blade.php'
     }
 
     protected function validator(array $data)
@@ -32,9 +36,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'user_type' => ['required', 'in:student,landlord'],
-            'phone' => ['nullable', 'string', 'max:15'],
-            'address' => ['nullable', 'string', 'max:255'],
+            'user_type' => ['required', 'string', 'in:student,landlord'],
         ]);
     }
 
@@ -71,13 +73,20 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
-        $this->validator($request->all())->validate();
+        try {
+            $this->validator($request->all())->validate();
 
-        event(new Registered($user = $this->create($request->all())));
+            event(new Registered($user = $this->create($request->all())));
 
-        Auth::guard('web')->login($user);
+            Auth::guard('web')->login($user);
 
-        return redirect($this->redirectTo);
+            return redirect()->intended($this->redirectTo);
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->validator->errors())->withInput();
+        } catch (\Exception $e) {
+            $this->logger->error('Error registering user: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Registration failed. Please try again.');
+        }
     }
 
     protected function guard()

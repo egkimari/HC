@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -19,12 +20,12 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        return $this->is_admin;
+        return (bool) $this->is_admin;
     }
 
     public function isLandlord()
     {
-        return $this->is_landlord;
+        return (bool) $this->is_landlord;
     }
 
     public function updateProfile($name, $email, $password = null)

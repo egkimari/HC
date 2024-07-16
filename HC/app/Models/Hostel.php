@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,10 +12,17 @@ class Hostel extends Model
         'name',
         'location',
         'rent',
-        'image',
         'ratings',
         'description',
     ];
+
+    /**
+     * Get the images associated with the hostel.
+     */
+    public function images()
+    {
+        return $this->hasMany(Image::class);
+    }
 
     // Define relationship with Booking model
     public function bookings()

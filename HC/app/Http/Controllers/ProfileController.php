@@ -11,50 +11,57 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
-    public function edit(Request $request): View
+    public function show(Request $request): View
     {
-        return view('profile.edit', [
+        return view('frontend.profile.show', [
             'user' => $request->user(),
         ]);
     }
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function edit(Request $request): View
     {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return view('frontend.profile.edit', [
+            'user' => $request->user(),
+        ]);
     }
 
-    /**
-     * Delete the user's account.
-     */
+    public function update(ProfileUpdateRequest $request): RedirectResponse
+    {
+        try {
+            $user = $request->user();
+            $user->fill($request->validated());
+
+            if ($user->isDirty('email')) {
+                $user->email_verified_at = null;
+            }
+
+            $user->save();
+
+            return Redirect::route('student.profile.show')->with('status', 'Profile updated successfully.');
+        } catch (\Exception $e) {
+            return Redirect::route('student.profile.edit')->with('error', 'Failed to update profile. Please try again.');
+        }
+    }
+
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
+        try {
+            $request->validateWithBag('userDeletion', [
+                'password' => ['required', 'current_password'],
+            ]);
 
-        $user = $request->user();
+            $user = $request->user();
 
-        Auth::logout();
+            Auth::logout();
 
-        $user->delete();
+            $user->delete();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
-        return Redirect::to('/');
+            return Redirect::to('/')->with('status', 'Your account has been deleted.');
+        } catch (\Exception $e) {
+            return Redirect::route('student.profile.edit')->with('error', 'Failed to delete account. Please try again.');
+        }
     }
 }
