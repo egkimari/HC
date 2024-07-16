@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Student;
 use App\Models\Landlord;
-use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
 
 class RegisterController extends Controller
@@ -32,7 +32,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'user_type' => ['required', 'in:student,landlord,admin'],
+            'user_type' => ['required', 'in:student,landlord'],
             'phone' => ['nullable', 'string', 'max:15'],
             'address' => ['nullable', 'string', 'max:255'],
         ]);
@@ -40,40 +40,48 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
-        $relatedEntity = null;
+        $userable = null;
 
         if ($data['user_type'] === 'student') {
-            $relatedEntity = Student::create([
+            $userable = Student::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'phone' => $data['phone'] ?? '',
-                'address' => $data['address'] ?? '',
+                'phone' => $data['phone'] ?? null,
+                'address' => $data['address'] ?? null,
             ]);
         } elseif ($data['user_type'] === 'landlord') {
-            $relatedEntity = Landlord::create([
+            $userable = Landlord::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'phone' => $data['phone'] ?? '',
-                'address' => $data['address'] ?? '',
+                'phone_number' => $data['phone'] ?? null,
+                'address' => $data['address'] ?? null,
             ]);
-        } elseif ($data['user_type'] === 'admin') {
-            $relatedEntity = Admin::create(); 
         }
 
-        $user = User::create([
+        return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'is_admin' => $data['user_type'] === 'admin',
-            'userable_type' => $data['user_type'] === 'student' ? Student::class : ($data['user_type'] === 'landlord' ? Landlord::class : ($data['user_type'] === 'admin' ? Admin::class : null)),
-            'userable_id' => $relatedEntity->id,
+            'is_admin' => false,
+            'is_landlord' => $data['user_type'] === 'landlord',
+            'userable_type' => $userable ? get_class($userable) : null,
+            'userable_id' => $userable ? $userable->id : null,
         ]);
-
-        return $user;
     }
 
-    protected function registered(Request $request, $user)
+    public function register(Request $request)
     {
-        
+        $this->validator($request->all())->validate();
+
+        event(new Registered($user = $this->create($request->all())));
+
+        Auth::guard('web')->login($user);
+
+        return redirect($this->redirectTo);
+    }
+
+    protected function guard()
+    {
+        return Auth::guard('web');
     }
 }

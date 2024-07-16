@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,11 +16,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-
-    public function userable()
-    {
-        return $this->morphTo();
-    }
 
     public function isAdmin()
     {
@@ -45,5 +39,11 @@ class User extends Authenticatable
         }
 
         $this->update($updateData);
+    }
+
+    // Polymorphic relationship
+    public function userable()
+    {
+        return $this->morphTo();
     }
 }

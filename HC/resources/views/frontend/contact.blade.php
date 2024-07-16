@@ -3,7 +3,7 @@
 @section('title', 'Contact')
 
 @section('content')
-<style>
+    <style>
         body {
             background-image: url('{{ asset("Images/home.jpg") }}');
             background-size: cover;
@@ -65,4 +65,3 @@
         </section>
     </main>
 @endsection
-

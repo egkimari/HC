@@ -36,7 +36,6 @@
         <div class="form-group">
             <label for="amenities">Amenities</label>
             <textarea class="form-control" id="amenities" name="amenities" required>{{ implode(', ', json_decode($hostel->amenities)) }}</textarea>
-            <!-- Note: Assumes amenities are stored as JSON array in the database -->
         </div>
 
         <!-- Update Button -->

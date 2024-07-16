@@ -11,47 +11,39 @@
             background-attachment: fixed;
             margin: 0;
         }
-        .navbar-nav {
+        header {
+            background-color: #f8f9fa;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header h1 {
+            font-family: 'Times New Roman', serif;
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .dark-bg {
+            background-color: #343a40;
+            color: #fff;
+            padding: 40px 20px;
+        }
+        .main-content {
+            max-width: 800px;
             margin: 0 auto;
         }
-        .navbar-nav li {
-            padding: 0 15px;
+        .main-content h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
         }
-        header .navbar {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-        }
-        .card {
-            background: rgba(255, 255, 255, 0.9); /* Slightly more opaque */
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 30px; /* Increased padding for more space */
-            max-width: 800px;
-            width: 100%;
-            margin: 40px auto;
-        }
-        .card h2 {
-            margin-top: 0; /* Remove margin from the top of h2 */
-        }
-        .navbar-brand {
-            font-size: 1.5rem;
-        }
-        .container text-center {
-            margin-top: 2rem;
-        }
-        .text-box {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .text-box h2 {
-            margin-top: 0;
-        }
-        .text-box p {
-            margin-bottom: 1rem;
+        .main-content p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
         }
     </style>
 

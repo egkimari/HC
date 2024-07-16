@@ -4,34 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Booking;
+use App\Models\Hostel;
+use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
-    /**
-     * Display a listing of the user's bookings.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function index()
-    {
-        // Retrieve all bookings associated with the authenticated user
-        $bookings = Booking::where('user_id', auth()->id())->get();
-        
-        // Return view with the retrieved bookings
-        return view('bookings.index', compact('bookings'));
-    }
-
-    /**
-     * Show the form for creating a new booking.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function create()
-    {
-        // Return view for creating a new booking
-        return view('bookings.create');
-    }
-
     /**
      * Store a newly created booking in storage.
      *
@@ -40,84 +17,57 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
-        // Create a new booking instance with the request data
-        $booking = new Booking($request->all());
-        
+        // Validate the request data
+        $request->validate([
+            'hostel_id' => 'required|exists:hostels,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+        ]);
+
+        // Create a new booking instance
+        $booking = new Booking();
+        $booking->hostel_id = $request->hostel_id;
+        $booking->start_date = $request->start_date;
+        $booking->end_date = $request->end_date;
+
         // Assign the authenticated user's ID to the booking
-        $booking->user_id = auth()->id();
-        
+        $booking->user_id = Auth::id(); // Use Auth::id() to get the authenticated user's ID
+
         // Set default status for the booking
         $booking->status = 'pending';
-        
-        // Save the booking to the database
+
+        // Save the booking
         $booking->save();
-        
-        // Redirect to the bookings index page
-        return redirect()->route('bookings.index');
+
+        // Redirect to the bookings index page with a success message
+        return redirect()->route('bookings.index')->with('success', 'Booking created successfully!');
     }
 
     /**
-     * Display the specified booking.
+     * Display a listing of the bookings.
      *
-     * @param  int  $id
-     * @return \Illuminate\View\View
+     * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function index()
     {
-        // Find the booking by its ID or throw a 404 error if not found
-        $booking = Booking::findOrFail($id);
-        
-        // Return view with the booking details
-        return view('bookings.show', compact('booking'));
+        // Fetch all bookings with hostel data
+        $bookings = Booking::with('hostel')->get();
+
+        // Return the bookings index view with bookings data
+        return view('bookings.index', compact('bookings'));
     }
 
     /**
-     * Show the form for editing the specified booking.
+     * Show the form for creating a new booking.
      *
-     * @param  int  $id
-     * @return \Illuminate\View\View
+     * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function create()
     {
-        // Find the booking by its ID or throw a 404 error if not found
-        $booking = Booking::findOrFail($id);
-        
-        // Return view with the booking details for editing
-        return view('bookings.edit', compact('booking'));
-    }
+        // Fetch all hostels
+        $hostels = Hostel::all();
 
-    /**
-     * Update the specified booking in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function update(Request $request, $id)
-    {
-        // Find the booking by its ID or throw a 404 error if not found
-        $booking = Booking::findOrFail($id);
-        
-        // Update the booking with the new request data
-        $booking->update($request->all());
-        
-        // Redirect to the bookings index page after updating
-        return redirect()->route('bookings.index');
-    }
-
-    /**
-     * Remove the specified booking from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy($id)
-    {
-        // Find the booking by its ID or throw a 404 error if not found, then delete it
-        Booking::findOrFail($id)->delete();
-        
-        // Redirect to the bookings index page after deletion
-        return redirect()->route('bookings.index');
+        // Return the bookings create view with hostels data
+        return view('bookings.create', compact('hostels'));
     }
 }
-

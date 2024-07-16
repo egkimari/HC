@@ -8,21 +8,20 @@ use Illuminate\Support\Facades\Hash;
 
 class UsersTableSeeder extends Seeder
 {
-    // Run the database seeds.
     public function run()
     {
-        // Clear the users table
-        DB::table('users')->truncate();
 
-        // Create an admin user
+
+        // Seed your users table
         DB::table('users')->insert([
             'name' => 'Erick Githinji',
             'email' => 'egkimari@gmail.com',
-            'password' => Hash::make('HC@reject'),  // Hash the password
-            'is_admin' => true,  // Set is_admin to true
+            'password' => Hash::make('HC@reject'),
+            'is_admin' => true,
+            'is_landlord' => false,
             'remember_token' => null,
         ]);
 
-        // Add more users or seed other data as needed
+        // Add more users as needed
     }
 }

@@ -4,7 +4,7 @@
 <div class="container">
     <h1>Add New Hostel</h1>
     <!-- Form for adding a new hostel -->
-    <form method="POST" action="{{ route('hostels.store') }}">
+    <form method="POST" action="{{ route('hostels.store') }}" enctype="multipart/form-data">
         @csrf <!-- CSRF protection -->
 
         <!-- Hostel Name -->
@@ -36,11 +36,12 @@
             <label for="amenities">Amenities</label>
             <textarea class="form-control" id="amenities" name="amenities" required></textarea>
         </div>
-        <div class="form-group">
-    <label for="image">Hostel Image (JPG only)</label>
-    <input type="file" class="form-control-file" id="image" name="image">
-</div>
 
+        <!-- Hostel Image -->
+        <div class="form-group">
+            <label for="image">Hostel Image (JPG only)</label>
+            <input type="file" class="form-control-file" id="image" name="image">
+        </div>
 
         <!-- Submit Button -->
         <button type="submit" class="btn btn-primary">Submit</button>
