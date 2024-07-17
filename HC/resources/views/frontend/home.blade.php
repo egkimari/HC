@@ -1,9 +1,9 @@
-<!-- resources/views/frontend/home.blade.php -->
 @extends('frontend.layout')
 
 @section('title', 'Home - HostelConnect')
 
 @section('styles')
+    @parent <!-- Retain parent styles -->
     <style>
         .main-content {
             text-align: center;
@@ -67,10 +67,19 @@
                         </div>
                     </a>
                 </div>
+
+                <div class="card">
+                    <a href="#" class="card-link">
+                        <div class="card-body text-center">
+                            <h3 class="card-title">List Your Hostel</h3>
+                            <p class="card-text">Are you a landlord? List your hostel with us and reach more tenants.</p>
+                        </div>
+                    </a>
+                </div>
             </div>
 
             <!-- Display featured hostels -->
-            @if($hostels->count())
+            @if($hostels->count() > 0)
                 <div class="mt-5">
                     <h3 class="text-center">Featured Hostels</h3>
                     <div class="row">

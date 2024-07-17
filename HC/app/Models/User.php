@@ -28,6 +28,11 @@ class User extends Authenticatable
         return (bool) $this->is_landlord;
     }
 
+    public function isStudent()
+    {
+        return $this->userable instanceof \App\Models\Student;
+    }
+
     public function updateProfile($name, $email, $password = null)
     {
         $updateData = [

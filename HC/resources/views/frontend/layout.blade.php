@@ -1,4 +1,3 @@
-<!-- resources/views/frontend/layout.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +8,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Custom CSS file -->
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <!-- Yield additional styles -->
+    @yield('styles')
 </head>
 <body>
     <!-- Header Section -->
@@ -25,7 +26,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item {{ Request::is('/') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('/') }}">Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="{{ url('/') }}">Home</a>
                     </li>
                     <li class="nav-item {{ Request::is('hostels') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ url('/hostels') }}">Hostels</a>
@@ -46,9 +47,15 @@
                             <a class="nav-link" href="{{ route('register') }}">Register</a>
                         </li>
                     @else
-                        <li class="nav-item">
-                            <a class="nav-link profile-link" href="{{ route('student.profile.show') }}">Profile</a>
-                        </li>
+                        @if(auth()->user()->isLandlord())
+                            <li class="nav-item">
+                                <a class="nav-link profile-link" href="{{ route('landlord.profile.show') }}">Profile</a>
+                            </li>
+                        @elseif(auth()->user()->isStudent())
+                            <li class="nav-item">
+                                <a class="nav-link profile-link" href="{{ route('student.profile.show') }}">Profile</a>
+                            </li>
+                        @endif
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('logout') }}"
                                onclick="event.preventDefault();
@@ -66,12 +73,14 @@
     </header>
 
     <!-- Main Content Section -->
-    <main>
-        @yield('content')
+    <main class="py-4">
+        <div class="container">
+            @yield('content')
+        </div>
     </main>
 
     <!-- Footer Section -->
-    <footer>
+    <footer class="mt-4 py-3 bg-light">
         <div class="container text-center">
             <p>&copy; 2024 HostelConnect. All rights reserved.</p>
         </div>
@@ -79,6 +88,7 @@
 
     <!-- JavaScript files -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

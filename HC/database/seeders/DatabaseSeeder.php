@@ -20,5 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminUserSeeder::class);
         // image
         $this->call(ImagesTableSeeder::class);
+        //Landlord
+        $this->call(AssignLandlordsToHostelsSeeder::class);
     }
 }

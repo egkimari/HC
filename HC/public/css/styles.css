@@ -1,5 +1,3 @@
-/* styles.css */
-
 /* Main Content Styles */
 .main-content {
     text-align: center;
@@ -25,7 +23,7 @@
 
 /* Ensure that the text is visible */
 .main-content a {
-    color:#010913; /* Primary link color */
+    color: #010913; /* Primary link color */
 }
 
 .main-content a:hover {
@@ -38,16 +36,27 @@
 }
 
 /* Navbar styles */
+.navbar-nav {
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.navbar-nav .nav-item {
+    padding: 0 10px; /* Adjust padding for better alignment */
+}
+
 .navbar-nav .nav-item .nav-link {
     padding: 0.5rem 1rem; /* Adjust padding for better alignment */
 }
 
-.navbar-nav .nav-item:last-child .nav-link {
-    margin-left: 1rem; /* Space between Profile and Logout links */
-}
-
 .navbar-nav .nav-item .nav-link:hover {
     color: #010913; /* Darker color on hover for all links */
+}
+
+/* Right-aligned links */
+.navbar-nav.ml-auto {
+    margin-left: auto;
 }
 
 /* Add profile-link class to push it to the right */
@@ -55,10 +64,14 @@
     margin-right: 2rem; /* Space from the right edge */
 }
 
+.navbar-nav .nav-item:last-child .nav-link {
+    margin-left: 1rem; /* Space between Profile and Logout links */
+}
+
 /* Button styles */
 .btn-primary {
     background-color: #010913; /* Darker primary color */
-    border-color:#010913; /* Darker border color */
+    border-color: #010913; /* Darker border color */
 }
 
 .btn-primary:hover {

@@ -14,10 +14,11 @@ use App\Http\Controllers\Landlord\BookingController as LandlordBookingController
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\HostelController as StudentHostelController;
 use App\Http\Controllers\Student\BookingController as StudentBookingController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\BookingController;
+use App\Http\Controllers\Student\ProfileController as StudentProfileController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\HostelController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\Landlord\LandlordProfileController;
 
 // Home and Static Pages
 Route::get('/', [HomeController::class, 'index'])->name('home'); // Home page
@@ -54,6 +55,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 // Landlord Routes
 Route::prefix('landlord')->name('landlord.')->middleware(['auth', 'role:landlord'])->group(function () {
     Route::get('dashboard', [LandlordDashboardController::class, 'index'])->name('dashboard');
+    Route::get('profile', [LandlordProfileController::class, 'show'])->name('profile.show'); // Landlord Profile
     Route::resource('hostels', LandlordHostelController::class)->except(['show']);
     Route::resource('bookings', LandlordBookingController::class)->except(['show']);
 });
@@ -63,10 +65,10 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'role:student'])
     Route::get('dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
     Route::resource('hostels', StudentHostelController::class)->only(['index']);
     Route::resource('bookings', StudentBookingController::class)->only(['index']);
-    Route::get('profile', [ProfileController::class, 'show'])->name('profile.show'); // View profile
-    Route::get('profile/edit', [ProfileController::class, 'edit'])->name('profile.edit'); // Profile edit form
-    Route::put('profile', [ProfileController::class, 'update'])->name('profile.update'); // Update profile
-    Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy'); // Delete profile
+    Route::get('/profile', [StudentProfileController::class, 'show'])->name('profile.show');
+    Route::get('profile/edit', [StudentProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('profile', [StudentProfileController::class, 'update'])->name('profile.update');
+    Route::delete('profile', [StudentProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 // Default Route for other undefined routes

@@ -4,41 +4,31 @@
 
 @section('styles')
 <style>
-    body {
-        background-image: url('{{ asset("Images/background.jpg") }}');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        display: flex;
-        justify-content: center; /* Center horizontally */
-        align-items: center; /* Center vertically */
-        height: 100vh;
-        margin: 0;
-    }
     .container {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100%;
+        height: 100vh;
+        padding: 20px;
     }
     .card {
         background: rgba(255, 255, 255, 0.8);
         border-radius: 15px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         padding: 2rem;
-        width: 100%; /* Adjust width as needed */
-        max-width: 400px; /* Adjust maximum width as needed */
+        width: 100%;
+        max-width: 400px;
     }
     .card-header {
         background: #f8f9fa;
         border-bottom: none;
         font-weight: bold;
         font-size: 1.5rem;
-        text-align: center; /* Center header text */
-        padding: 1rem 0; /* Adjust padding as needed */
+        text-align: center;
+        padding: 1rem 0;
     }
     .form-group {
-        margin-bottom: 1.5rem; /* Adjust margin between form elements */
+        margin-bottom: 1.5rem;
     }
     .btn-primary {
         background-color: #007bff;
